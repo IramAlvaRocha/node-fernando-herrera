@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { CreateTable } from '../domain/use-cases/create-table.use-case';
+import { SaveFile } from '../domain/use-cases/save-file.use-case';
 
 interface RunOptions {
     base: number;
@@ -17,5 +18,15 @@ export class ServerApp {
 
         const table = new CreateTable().execute({base, limit});
         if(showTable) console.log(table);
+
+        const wasCreated = new SaveFile().
+        execute({
+            fileContent: table, 
+            fileName: `${base}`,
+            fileDestination: `${'outputs'}/${base}`
+        });
+
+        if(wasCreated) console.log('File created!');
+        else console.log('Error creating file!');
     }
 }
